@@ -1,0 +1,28 @@
+.main_div{
+  width: 100%;
+  height: 100vh;
+  background: rgb(67, 3, 119);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.center_div{
+  background: rgb(19, 212, 187);
+  width: 350px;
+  height: 500px;
+  box-shadow: 5px 5px 8px blue;
+}
+h1{
+  display: flex;
+  justify-content: center;
+  font-size: 7em;
+}
+.btn_div{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+button{
+  font-size: 5em;
+  background: chocolate;
+}

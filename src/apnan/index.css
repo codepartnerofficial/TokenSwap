@@ -1,0 +1,313 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.header{
+    width: 100%;
+    height: 72px;
+    background: #17171A;
+    display: flex;
+    justify-content: space-between;
+    color: aliceblue;
+}
+.header .heading{
+    font-size: 20px;
+    color: aliceblue;
+    line-height: 72px;
+    font-weight: 300;
+    padding-left: 64px;
+    font-size: 30px;
+    background-image: linear-gradient(90deg, #A9CDFF, #72F6D1, #A0ED8D, #FED365, #FAA49E);
+    background-clip: text;
+    color: transparent;
+}
+.header .left_content{
+    font-size: 18px;
+}
+.header .left_content ul{
+    display: flex;
+    margin-left: -200px;
+}
+.header .left_content ul li{
+    list-style: none;
+    padding: 29.5px;
+}
+.header .right_content{
+    font-size: 18px;
+}
+.header .right_content ul{
+    display: flex;
+}
+.header .right_content ul li{
+    list-style: none;
+    margin-top: 16px;
+    margin-right: 8px;
+    padding: 16px;
+    border-radius: 12px;
+    background: #222531;
+    color: #FEBF32;
+}
+.header .right_content ul .active{
+    background: #FEBF32;
+    color: black;
+
+}
+.navicon{
+    width: 100%;
+}
+.navicon .icon{
+    position:absolute;
+    top: 25px;
+    right: 30px;
+    color: #FFFFFF;
+    font-size: 25px;
+    display: none;
+    cursor: pointer;
+}
+.navicon .iconclose{
+    position:absolute;
+    top: 80px;
+    right: 30px;
+    color: #FFFFFF;
+    font-size: 25px;
+    cursor: pointer;
+    z-index: 5;
+    display: none;
+}
+
+
+.popup .overlay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+    display: none;
+}
+.popup .content{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%) scale(0);
+    background: #17171A;
+    width: 512px;
+    height: 580px;
+    z-index: 2;
+    text-align: center;
+    box-sizing: border-box;
+    border-radius: 16px;
+}
+.popup .close{
+    position: absolute;
+    right: 31px;
+    top: 53px;
+    color: #fff;
+    cursor: pointer;
+}
+.popup p{
+    font-weight: 300;
+    font-size: 24px;
+    line-height: 36px;
+    padding-top: 40px;
+    background-image: linear-gradient(90deg, #A9CDFF, #72F6D1, #A0ED8D, #FED365, #FAA49E);
+    background-clip: text;
+    color: transparent;
+    padding-bottom: 40px;
+
+}
+.popup.active .overlay{
+    display: block;
+}
+.popup.active .content{
+    transition: all 100ms ease-in-out;
+    transform: translate(-50%,-50%) scale(1);
+
+}
+
+.popup .content .token{
+    display: flex;
+    justify-content: space-between;
+    padding: 0 40px;
+    margin: 24px;
+}
+.popup .content .token:hover{
+    border: 1px solid;
+    border-image : linear-gradient(90deg, #A9CDFF, #72F6D1, #A0ED8D, #FED365, #FAA49E);
+    border-image-slice :1;
+    border-radius: 1em;
+    background-repeat: no-repeat;  
+
+}
+.popup .content .token h1{
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    color: #FFFFFF;
+    padding: 16px 0;
+}
+.popup .content .token p{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #44485F;
+    padding: 16px 0;
+    line-height: 24px;
+    box-sizing: border-box;
+    position: relative;
+    top: 6px;
+}
+.popup .content .bottom{
+    position: absolute;
+    bottom: 40px;
+    left: 24px;
+    font-size: 14px;
+    line-height: 24px;
+    color: #fff;
+}
+.popup .content .bottom a{
+    color: #5F97FF;
+}
+
+
+.chain_popup .overlay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+    display: none;
+}
+.chain_popup .content{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%) scale(0);
+    background: #17171A;
+    width: 512px;
+    height: 580px;
+    z-index: 2;
+    text-align: center;
+    box-sizing: border-box;
+    border-radius: 16px;
+}
+.chain_popup .close{
+    position: absolute;
+    right: 31px;
+    top: 53px;
+    color: #fff;
+    cursor: pointer;
+}
+.chain_popup p{
+    font-weight: 300;
+    font-size: 24px;
+    line-height: 36px;
+    padding-top: 40px;
+    background-image: linear-gradient(90deg, #A9CDFF, #72F6D1, #A0ED8D, #FED365, #FAA49E);
+    background-clip: text;
+    color: transparent;
+    padding-bottom: 40px;
+
+}
+.chain_popup.active .overlay{
+    display: block;
+}
+.chain_popup.active .content{
+    transition: all 100ms ease-in-out;
+    transform: translate(-50%,-50%) scale(1);
+
+}
+
+.chain_popup .content .token{
+    display: flex;
+    justify-content: space-between;
+    padding: 0 40px;
+    margin: 24px;
+}
+.chain_popup .content .token:hover{
+    border: 1px solid;
+    border-image : linear-gradient(90deg, #A9CDFF, #72F6D1, #A0ED8D, #FED365, #FAA49E);
+    border-image-slice :1;
+    border-radius: 1em;
+    background-repeat: no-repeat;  
+
+}
+.chain_popup .content .token h1{
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    color: #FFFFFF;
+    padding: 16px 0;
+}
+.chain_popup .content .token p{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #44485F;
+    padding: 16px 0;
+    line-height: 24px;
+    box-sizing: border-box;
+    position: relative;
+    top: 6px;
+}
+.chain_popup .content .bottom{
+    position: absolute;
+    bottom: 40px;
+    left: 24px;
+    font-size: 14px;
+    line-height: 24px;
+    color: #fff;
+}
+.chain_popup .content .bottom a{
+    color: #5F97FF;
+}
+
+
+@media screen and (max-width: 850px) {
+.header{
+  display: inline-block;
+  justify-content: center;
+}
+.header .left_content ul{
+  display: flex;
+  margin-left: 0px;
+  background: #17171A;
+}
+.header .left_content ul li{
+    padding-bottom: 0px;
+}
+.header .right_content ul{
+    background: #17171A;
+}
+.navicon .icon{
+    display: inline-block;
+}
+.header .left_content{
+    display: none;
+    transform: scale(0);
+}
+.header .right_content{
+    display: none;
+    transform: scale(0);
+    
+}
+.navicon .iconclose.active{
+    display: inline-block;
+}
+.header .left_content.active{
+    display: block;
+    transition: all 100ms ease-in-out;
+    transform: scale(1);
+}
+.header .right_content.active{
+    display: block;
+    transition: all 100ms ease-in-out;
+    transform: scale(1);
+}
+
+
+}
