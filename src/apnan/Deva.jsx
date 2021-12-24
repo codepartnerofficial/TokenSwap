@@ -97,7 +97,7 @@ const naviconclose = () => {
   return(
   <>
   <div className='header'>
-    <div className='heading'>Deva</div>
+    <div className='heading'>Zenith Dex</div>
     <div className='left_content' id='navicon'>
       <ul>
         <li onClick={swapactive}>Swap</li>
