@@ -6,6 +6,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import { AiOutlineMenu } from "react-icons/ai";
 
 import { useMoralis } from "react-moralis";
+import Color from 'color';
 
 const serverUrl = "https://1pf18efvmoil.usemoralis.com:2053/server"; //Server url from moralis.io
 const appId = "Dd51OOJJLmU2FhBBYZsXpuhdG656X3zlFAJruFyY"; // Application id from moralis.io
@@ -16,8 +17,16 @@ const Header = (props) => {
 
   const { Moralis } = useMoralis();
   const { authenticate, isAuthenticated, user } = useMoralis();
+  const [address, setAddress] = useState('');
+  const [icon, setIcon] = useState("")
 
-  const [chain, setChain] = useState('eth')
+  useEffect(() => {
+    if (isAuthenticated) {
+      setAddress(user.attributes.ethAddress);
+    }
+  }, [isAuthenticated]);
+
+  const [chain, setChain] = useState('https://ethereum.org/static/a110735dade3f354a46fc2446cd52476/db4de/eth-home-icon.webp')
 
   //console.log(JSON.stringify(chain))
 
@@ -27,8 +36,8 @@ const Header = (props) => {
   
 
 const popup = async() => {
-  document.getElementById('popup').classList.add('active');
-
+  document.getElementById('popup').classList.remove('active');
+  document.getElementById('address').innerHTML = address.slice(0, 5) +"....." +address.slice(35, 40)
   await Moralis.initialize(appId);
   Moralis.serverURL = serverUrl;
   await Moralis.enableWeb3();
@@ -43,7 +52,6 @@ const Auth = async() => {
     console.log(`${user.get("username")}`)
     let currentUser = Moralis.User.current();
     let address = Moralis.User.current().get("ethAddress");
-    window.alert('Your Wallet Address : ' +address)
     if (!currentUser) {
       currentUser = await Moralis.authenticate();
     }
@@ -98,8 +106,10 @@ const naviconclose = () => {
     </div>
     <div className='right_content' id='naviconone'>
       <ul>
-        <li class='active' onClick={chain_popup}>0 DeV</li>
-        <li onClick={popup}>connect to a wallet</li>
+        <li class='active' onClick={chain_popup}>
+          <img src = {chain} />
+        </li>
+        <li onClick={popup} id='address'>connect to a wallet</li>
         <li><BsFillBrightnessHighFill /></li>
         <li><AiOutlineEllipsis /></li>
       </ul>
@@ -141,18 +151,18 @@ const naviconclose = () => {
       <div className='close' onClick={chain_popclose}> <AiOutlineClose /></div>
       <p>connect to Chain</p>
       <div class='token' >
-        <h1 vaue='eth' onClick={() => setChain({Chain : 'eth'})}>ETH</h1>
-        <p>
-        <img src="https://tokens.1inch.io/0x0327112423f3a68efdf1fcf402f6c5cb9f7c33fd.png" width="100%" />
-        </p>
+        <h1 vaue='eth' onClick={(e) => setChain({Chain : 'https://ethereum.org/static/a110735dade3f354a46fc2446cd52476/db4de/eth-home-icon.webp'})}>ETH</h1>
+        <h1>
+        <img src='https://ethereum.org/static/a110735dade3f354a46fc2446cd52476/db4de/eth-home-icon.webp' width="26" />
+        </h1>
       </div>
       <div class='token' >
-        <h1 vaue="bnb" onClick={() => setChain({Chain : 'bnb'})}>BNB</h1>
-        <p><img src="https://etherscan.io/token/images/bnb_28_2.png" width="26" id="token_list_img"/></p>
+        <h1 vaue="bnb" onClick={() => setChain({Chain : 'https://www.freelogovectors.net/wp-content/uploads/2021/10/binance-coin-bnb-logo-freelogovectors.net_.png" width="26" id="token_list_img'})}>BSC</h1>
+        <h1><img src="https://www.freelogovectors.net/wp-content/uploads/2021/10/binance-coin-bnb-logo-freelogovectors.net_.png" width="26" id="token_list_img'"/></h1>
       </div>
       <div class='token'>
-        <h1 value="zenith" onClick={() => setChain({Chain : 'zen'})}>ZENITH</h1>
-        <p><img src="https://etherscan.io/token/images/zenith_32.png" width="26" id="token_list_img"/></p>
+        <h1 value="zenith" onClick={() => setChain({Chain : 'https://www.zenithchain.co/assets/images/logo.png'})}>ZENITH</h1>
+        <h1><img src="https://www.zenithchain.co/assets/images/logo.png" width="26" id="token_list_img"/></h1>
       </div>
       <div className="bottom">New to Ethereum? <a>Learn more about wallets</a></div>
     </div>

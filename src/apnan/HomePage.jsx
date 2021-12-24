@@ -21,72 +21,61 @@ import { AiOutlineDown } from "react-icons/ai";
 
 import {Header} from './Deva.jsx';
 import { useMoralis } from "react-moralis";
+import { quote } from 'shell-quote';
 
 const serverUrl = "https://ldj2ql65uhog.usemoralis.com:2053/server"; //Server url from moralis.io
 const appId = "w406UCeyzHb3MIPsfi9QqMzXdXcskUKB5LW3VGq9"; // Application id from moralis.io
-
-
-const nativeAddress = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
-
-const chainIds = {
-  "0x1": "eth",
-  "0x38": "bsc",
-  "0x89": "polygon",
-};
-
-const getChainIdByName = (chainName) => {
-  for (let chainId in chainIds) {
-    if (chainIds[chainId] === chainName) return chainId;
-  }
-};
-
-const IsNative = (address) => address === "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
-
 
 
 
 const HomePage = () =>{
 
   const { Moralis } = useMoralis();
+  
 
   const [tokens, setTokens] = useState([]);
   const [toAmount, setToAmount] = useState();
   const [gasAmount, setGasAmount] = useState();
   const [order, setOrder] = useState();
-  //const tokenAddress = '0x006bea43baa3f7a6f765f14f10a1a1b08334ef45';
   const totokenAddress = '0x0327112423f3a68efdf1fcf402f6c5cb9f7c33fd';
   let tokenSymbol = 'ETH';
   const [tokenName, setTokenName] = useState([]);
-  const [fromAmount, setFormAmount] = useState(0);
+  const [fromAmount, setFormAmount] = useState(1);
 
   const { account } = useMoralis();
   const [tokenList, setTokenlist] = useState();
 
+  const [balance, setBalance] = useState();
+  const [address, setAddress] = useState('');
+  
+
   
 
   const [currentTrade, setCurrentTrade] = useState({
-    name: '',
-    address: '',
-    logo: '',
-    symbol: '',
-    decimals: 0,
+    name: 'Stox',
+    address: '0x006bea43baa3f7a6f765f14f10a1a1b08334ef45',
+    logo: 'https://tokens.1inch.io/0x006bea43baa3f7a6f765f14f10a1a1b08334ef45.png',
+    symbol: 'STX',
+    decimals: 18,
   });
 
   const [exchangeTrade, setExchangeTrade] = useState({
-    name: '',
-    address: '',
-    logo: '',
-    symbol: '',
-    decimals: 0,
+    name: 'DOS Network Token',
+    address: '0x0a913bead80f321e7ac35285ee10d9d922659cb7',
+    logo: 'https://tokens.1inch.io/0x0a913bead80f321e7ac35285ee10d9d922659cb7.png',
+    symbol: 'DOS',
+    decimals: 18,
   });
 
-  const [quote, setQuote] = useState({
-    fromToken: '',
-    toToken: '',
-    toTokenAmount: '',
-    fromTokenAmount: '',
-    estimatedGas: '',
+  const [Quote, setQuote] = useState({
+    faddress: '',
+    fdecimals: '',
+    flogoURI: '',
+    fname: '',
+    fsymbol: '',
   })
+
+  
 
   const [on, setOn] = useState(0);
   
@@ -94,11 +83,9 @@ const HomePage = () =>{
 
   const { authenticate, isAuthenticated, user } = useMoralis();
 
-  const Auth = async() => {
-    if (!isAuthenticated) {
-      authenticate()
-    }
-  }
+  
+
+  
   
 
 
@@ -114,42 +101,53 @@ const HomePage = () =>{
       await Moralis.enableWeb3();
       await listAvailableTokens();
       await getQuote();
+      let web3 = await Moralis.Web3.enable();
+      
     }
 
     init();
 
+    const Auth = async() => {
+      if (!isAuthenticated) {
+        authenticate()
+      }
+      if (isAuthenticated) {
+        setAddress(user.attributes.ethAddress);
+      }
+    }
+    
+    const getBalance = async () => {
+      let web3 = await Moralis.Web3.enable();
+      // 
+      var accounts = await web3.eth.getAccounts();
+      console.log(accounts)
+      let walletBalance = web3.utils.fromWei(address.toString(), "ether")
+      //console.log(balance_)
+      //setBalance(walletBalance)
+    }
+
+
+
     
     // token info from 1inch
     const listAvailableTokens = async () => {
+      await getBalance()
       //console.log('In listAvailableTokens')
       const result = await Moralis.Plugins.oneInch.getSupportedTokens({
         chain: "eth", // The blockchain you want to use (eth/bsc/polygon)
       });
-      
       const tokensObject = await result.tokens;
       //console.log(tokensObject)
       setTokens(tokensObject)
       const tokenName_ = Object.values(tokensObject).map(val => val);
       setTokenName(tokenName_.slice(0, 20));
-      
       //const tokensImg = Object.values(tokensObject).map(val => val.logoURI);
       //setTokensImg({ tokensImg: tokensImg})
-
       /*tokenName.map(e => {
         console.log(e.symbol)
       })*/
 
-    };
-    
-
-  }, []);
-
-  const getQuote = async function() {
-    console.log(currentTrade.address);
-    //console.log(exchangeTrade.address);
-    //const fromAmount = 1
-    if (!currentTrade.symbol || !exchangeTrade.symbol || !fromAmount) return;
-  
+    //if (!currentTrade.symbol || !exchangeTrade.symbol || !fromAmount) return;
     let amount = Number(fromAmount) * 10**currentTrade.decimals;
     const quote = await Moralis.Plugins.oneInch.quote({
       chain: 'eth',
@@ -157,31 +155,52 @@ const HomePage = () =>{
       toTokenAddress: exchangeTrade.address,
       amount: amount,
     })
-    console.log(quote)
+    //console.log(quote)
+    
+    };
+    
+
+  }, []);
+
+  const getQuote = async function() {
+    //console.log(currentTrade.address);
+   // if (!currentTrade.symbol || !exchangeTrade.symbol || !fromAmount) return;
+    let amount = Number(fromAmount) * 10**currentTrade.decimals;
+    const quote = await Moralis.Plugins.oneInch.quote({
+      chain: 'eth',
+      fromTokenAddress: currentTrade.address,
+      toTokenAddress: exchangeTrade.address,
+      amount: amount,
+    })
+    //console.log(quote)
     setToAmount({
-      toAmount : quote.toTokenAmount.length < 40 ? (quote.toTokenAmount / 10**quote.toToken.decimals).toFixed(8) : 'Too Much!'
+      //toAmount : quote.toTokenAmount.length < 40 ? (quote.toTokenAmount / 10**quote.toToken.decimals).toFixed(8) : 'Too Much!'
     });
     setGasAmount({ gasAmount:quote.estimatedGas })
- 
-    
     if(fromAmount) {
       setOrder({ order: true })
     }
 
     setQuote({
-      fromToken: quote.fromToken.name,
-      fromTokenLogo: quote.fromToken.logoURI,
-      fromTokenSymbol: quote.fromToken.symbol,
-      toToken: quote.toToken.name,
-      toTokenLogo: quote.toToken.logoURI,
-      toTokenSymbol: quote.toToken.symbol,
-      toTokenAmount: quote.toTokenAmount,
-      fromTokenAmount: quote.fromTokenAmount,
-      estimatedGas: quote.estimatedGas,
+      faddress: quote.fromToken.address,
+      fdecimals: quote.fromToken.decimals,
+      flogoURI: quote.fromToken.logoURI,
+      fname: quote.fromToken.name,
+      fsymbol: quote.fromToken.symbol,
+      ftokenamount: quote.fromTokenAmount/ 10 ** quote.toToken.decimals,
+      taddress: quote.toToken.address,
+      tdecimals: quote.toToken.decimals,
+      tlogoURI: quote.toToken.logoURI,
+      tname: quote.toToken.name,
+      tsymbol: quote.toToken.symbol,
+      ttokenamount: quote.toTokenAmount/quote.toToken.decimals  ** 10,
+      gasAmount:quote.estimatedGas
     })
+    
+    
   }
 
-  async function trySwap(props) {
+  async function trySwap() {
     const tokenSymbol = "BSC";
     console.log('In Try swap')
     let address = Moralis.User.current().get("ethAddress");
@@ -221,17 +240,6 @@ const HomePage = () =>{
       slippage: 1,
     });
   }
-
-  
-  
-
-  
-
-  
-  console.log(global.variable);
-
-  
-  
 
 
   const transitionpopup = async() => {
@@ -354,7 +362,7 @@ const HomePage = () =>{
         <div className='twoleft'>
           <p id='from'>From</p>
           <input type='text' placeholder='0.0' onChange={event => setFormAmount(event.target.value)} />
-          <p id='balance'>Balance : {fromAmount}</p>
+          <p id='balance'>{balance}</p>
         </div>
             <div className='tworight'>
                 <p>Max</p>
@@ -375,11 +383,21 @@ const HomePage = () =>{
     <div className='steptwo'>
         <div className='twoleft'>
           <p id='from'>To</p>
-          <input type='text' placeholder={quote.toTokenAmount} />
-          <p id='balance'>{quote.toTokenAmount}</p>
+          <input type='text' placeholder='0.0' />
+          <p id='balance'>{}</p>
         </div>
-            <div className='tworight'>
-              <div className='button' onClick={selectockenpop}>Select a Tokan</div>
+        <div className='tworight'>
+               
+              <div className='select' onClick={selectockenpop}>
+                <div className="left">
+                  <span><img src={exchangeTrade.logo} width="32" id="token_list_img"/></span>
+                  <p>{exchangeTrade.symbol}</p>
+                </div>
+                <div className="right">
+                  <p><AiOutlineDown /></p>
+                </div>
+              </div>
+               
             </div>
     </div>
     <div className="stepthree">
@@ -491,7 +509,7 @@ const HomePage = () =>{
               </div>
           </div>
           <div className="right">
-            <p>2.096</p>
+            <p></p>
           </div>
           </div>)
           })
@@ -589,22 +607,21 @@ const HomePage = () =>{
       </div>
       <div className="two">
         <div className="left">
-          <p>
-            {JSON.stringify(quote.fromToken.name)} {quote.fromTokenSymbol}
+          <p>{Quote.fsymbol}
             </p>
         </div>
         <div className="right">
-          <p>{JSON.stringify(quote.fromTokenAmount)}</p>
-          <span><img src={quote.fromTokenLogo} width="26" id="token_list_img"/></span>
+          <p>{Quote.ftokenamount}</p>
+          <span><img src={Quote.flogoURI} width="32" id="token_list_img"/></span>
         </div>
       </div>
       <div className="two">
         <div className="left">
-          <p>{JSON.stringify(quote.toToken)}</p>
+          <p>{Quote.tsymbol}</p>
         </div>
         <div className="right">
-          <p>{JSON.stringify(quote.toTokenAmount)}</p>
-          <span><img src={quote.toTokenLogo} width="26" id="token_list_img"/></span>
+          <p>{Quote.ttokenamount}</p>
+          <span><img src={Quote.tlogoURI} width="32" id="token_list_img"/></span>
         </div>
       </div>
       <div className="three">
@@ -613,35 +630,31 @@ const HomePage = () =>{
       </div>
       <div className="four">
         <div className="left">
-          <p>price</p>
+          <p>Estimated Gas</p>
         </div>
         <div className="right">
-          <p>{JSON.stringify(quote.estimatedGas)} ETH per 1INCH</p>
+          <p> {Quote.gasAmount}</p>
           <span><BsArrowDownUp /></span>
         </div>
       </div>
       <div className="five">
         <div className="left">
-          <p>Minimum received  <span> <AiOutlineQuestionCircle /> <p>Restricts swaps to direct pairt only</p></span></p>
         </div>
         <div className="right">
-          <p>9.74 1INCH</p>
+          <p></p>
         </div>
       </div>
       <div className="five">
         <div className="left">
-          <p>Price impact  <span> <AiOutlineQuestionCircle /> <p>Restricts swaps to direct pairt only</p></span></p>
         </div>
         <div className="right">
-          <p>0.11</p>
+          <p></p>
         </div>
       </div>
       <div className="five">
         <div className="left">
-          <p>Liquidity Provider Fee  <span> <AiOutlineQuestionCircle /> <p>Restricts swaps to direct pairt only</p></span></p>
         </div>
         <div className="right">
-          <p>0.000066 ETH</p>
         </div>
       </div>
       <div className="six" onClick={swapextopen}>
@@ -661,35 +674,35 @@ const HomePage = () =>{
         <p onClick={swapextclose}><AiOutlineClose /></p>
       </div>
       <div className="two">
-        <h1>0.022 ETH</h1>
-        <p>$39.67</p>
+        <h1>{Quote.toAmount}</h1>
+        <p></p>
       </div>
       <div className="three">
         <div className="left">
           Details
         </div>
         <div className="right">
-          Data
+          
         </div>
       </div>
       <div className="four">
         <div className="left">
           <p>Gas fee</p>
-          <p id='color'>badge</p>
+          <p id='color'>{Quote.gasAmount}</p>
         </div>
         <div className="right">
-          <p>{quote.estimatedGas}</p>
-          <p>{quote.toTokenAmount}</p>
+          <p></p>
+          <p></p>
         </div>
       </div>
       <div className="five">
         <div className="left">
           <h1>Total</h1>
-          <p>(Amount + gas fee)</p>
+          <p></p>
         </div>
         <div className="right">
-          <h1>{JSON.stringify(quote.toTokenAmount + quote.estimatedGas)}</h1>
-          <p>0.12$</p>
+          <h1></h1>
+          <p>{Quote.ftokenamount + Quote.ttokenamount}</p>
         </div>
       </div>
       <div className="six">
